@@ -1,0 +1,79 @@
+<html>
+<head>
+<link rel="stylesheet"
+	href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
+	integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+	crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
+	integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
+	crossorigin=""></script>
+<style type="text/css">
+#mapid {
+	height: 800px;
+}
+</style>
+</head>
+<body>
+	<div id="mapid"></div>
+
+	<script th:inline="javascript">
+	/*<![CDATA[*/
+		var iconUrl = 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-';
+	
+		var iconRed = iconUrl + 'red.png'
+		var iconBlue = iconUrl + 'blue.png'
+		var iconGreen = iconUrl + 'green.png'
+		var shadowUrl = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png';
+		
+		var greenIcon = new L.Icon({
+	  		iconUrl: iconGreen,
+	  		shadowUrl: shadowUrl,
+	  		iconSize: [15, 31],
+	  		iconAnchor: [12, 31],
+	  		popupAnchor: [1, -34],
+	  		shadowSize: [31, 31]
+		});
+		var blueIcon = new L.Icon({
+	  		iconUrl: iconBlue,
+	  		shadowUrl: shadowUrl,
+	  		iconSize: [15, 31],
+	  		iconAnchor: [12, 31],
+	  		popupAnchor: [1, -34],
+	  		shadowSize: [31, 31]
+		});
+		var redIcon = new L.Icon({
+	  		iconUrl: iconRed,
+	  		shadowUrl: shadowUrl,
+	  		iconSize: [25, 41],
+	  		iconAnchor: [12, 41],
+	  		popupAnchor: [1, -34],
+	  		shadowSize: [41, 41]
+		});
+
+
+	var nomiArr = /*[[${nomis}]]*/ ;
+	var map = L.map('mapid').setView([55.6058,13.0078], 12);
+	
+	L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+	    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+	}).addTo(map);
+	for (i = 0; i < nomiArr.length; i++) {
+		if(nomiArr[i].lat && nomiArr[i]) {
+			var iconToUse = greenIcon;
+			if(nomiArr[i].category == 1) {
+				iconToUse = redIcon;
+			} else if(nomiArr[i].category == 2) {
+				iconToUse = blueIcon;
+			}
+			
+	L.marker([nomiArr[i].lat, nomiArr[i].lon], {icon: iconToUse}).addTo(map)
+	    .bindPopup("<b>" + nomiArr[i].city + "</b>, " + nomiArr[i].title 
+	    		+ "<br>" + nomiArr[i].jsDate
+	    		+ "<br>" + nomiArr[i].description);
+	}
+	}
+	
+	/*]]>*/
+</script>
+</body>
+</html>
